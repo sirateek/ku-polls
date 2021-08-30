@@ -1,4 +1,5 @@
 # ku-polls
+The online polls web application
 
 # Project Information
 - [Wiki Home](../../wiki/Home)
