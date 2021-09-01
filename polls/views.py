@@ -43,4 +43,5 @@ def vote(request, question_id):
 def result(request, question_id):
     """Poll result page that displays the results for a particular question.
     """
-    return HttpResponse(f"This is the result page for question {question_id}")
+    question = get_object_or_404(Question, pk=question_id)
+    return render(request, 'polls/results.html', {'question': question})
