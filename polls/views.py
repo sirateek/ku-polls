@@ -8,6 +8,9 @@ from .models import Choice, Question
 
 
 class IndexView(generic.ListView):
+    """Poll Index page that displays the latest few questions
+    """
+
     template_name = "polls/index.html"
     context_object_name = 'latest_question_list'
 
@@ -17,11 +20,17 @@ class IndexView(generic.ListView):
 
 
 class DetailView(generic.DetailView):
+    """Question detail page that displays the question text with a form to vote
+    """
+
     model = Question
     template_name = "polls/detail.html"
 
 
 class ResultsView(generic.DetailView):
+    """Poll result page that displays the results for a particular question.
+    """
+
     model = Question
     template_name = 'polls/results.html'
 
