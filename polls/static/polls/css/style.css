@@ -5,6 +5,10 @@ a {
     color: inherit;
 }
 
+body {
+    background-color: #b0b0b0;
+}
+
 .card {
     margin: 20px;
 }
