@@ -12,12 +12,16 @@
 
 <body>
   <nav class="navbar navbar-dark bg-dark">
-    <div class="navbar-brand">
-      <img src="{% static 'polls/images/KU_logo.svg'%}" width="30" height="30" alt="KU Logo">
-      Polls
-    </div>
+    <a href="{% url 'polls:index' %}">
+      <div class="navbar-brand">
+        <img src="{% static 'polls/images/KU_logo.svg'%}" width="30" height="30" alt="KU Logo">
+        Polls
+      </div>
+    </a>
   </nav>
   {% block content %}{% endblock content%}
+
+  {% block script %}{% endblock script %}
 </body>
 
 </html>

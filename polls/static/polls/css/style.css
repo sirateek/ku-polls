@@ -1,5 +1,10 @@
 @import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css");
 
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
 .card {
     margin: 20px;
 }
