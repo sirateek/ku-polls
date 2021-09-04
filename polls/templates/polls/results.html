@@ -1,9 +1,60 @@
-<h1>{{ question.question_text }}</h1>
+{% extends 'polls/base.html' %}
+{% load static %}
 
-<ul>
-{% for choice in question.choice_set.all %}
-    <li>{{ choice.choice_text }} -- {{ choice.votes }} vote{{ choice.votes|pluralize}}</li>
-{% endfor %}
-</ul>
+{% block css %}
+<link rel="stylesheet" type="text/css" href="{% static 'polls/css/result.css' %}">
+{% endblock css %}
 
-<a href="{% url 'polls:detail' question.id %}">Vote again?</a>
+{% block content %}
+
+<div class="card">
+    <div class="card-header">
+        <h3>Poll Results</h3>
+    </div>
+    <div class="card-body">
+        <h5>{{ question.question_text }}</h5>
+        {% if not is_has_some_vote %}
+        <div class="alert alert-warning" role="alert">
+            There is no vote on this question yet.
+        </div>
+        {% endif %}
+        <div id="piechart" class="piechart"></div>
+
+        <a href="{% url 'polls:index'%}">
+            <button type="button" class="btn btn-primary">Back to home</button>
+        </a>
+        <a href="{% url 'polls:detail' question.id %}">
+            <button type="button" class="btn btn-primary">Vote Again?</button>
+        </a>
+    </div>
+</div>
+
+{% endblock content %}
+
+{% block script %}
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script>
+    google.charts.load('current', {
+        'packages': ['corechart']
+    });
+    google.charts.setOnLoadCallback(drawChart);
+
+    function drawChart() {
+        var chartData = [
+            ['Choice', 'Vote'],
+        ];
+        var choicesData = JSON.parse("{{vote_results | escapejs}}");
+        for (var choice of choicesData) {
+            chartData.push(choice);
+        }
+        var data = google.visualization.arrayToDataTable(chartData);
+
+        var option = {
+            sliceVisibilityThreshold: 0
+        }
+        var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+
+        chart.draw(data, option);
+    }
+</script>
+{% endblock script %}
