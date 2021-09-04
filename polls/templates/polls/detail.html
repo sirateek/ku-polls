@@ -1,8 +1,14 @@
 {% extends 'polls/base.html' %}
+{% load static %}
+
+{% block css %}
+<link rel="stylesheet" type="text/css" href="{% static 'polls/css/detail.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'polls/css/hover-zoom-effect.css' %}">
+{% endblock css %}
 
 {% block content %}
 
-<div class="card">
+<div class="card main-card">
     <div class="card-header">
         <h3>{{ question.question_text }}</h3>
     </div>
@@ -12,14 +18,33 @@
             <strong>{{ error_message }}</strong>
         </div>
         {% endif %}
+        {% if question.choice_set.count == 0 %}
+        <div class="alert alert-danger" role="alert">
+            <strong>There is no choice for this question.</strong>
+        </div>
+        <a href="{% url 'polls:index'%}">
+            <button type="button" class="btn btn-primary">Back to home</button>
+        </a>
+        {% else %}
         <form action="{% url 'polls:vote' question.id %}" method="POST">
             {% csrf_token %}
             {% for choice in question.choice_set.all %}
-            <input type="radio" name="choice" id="choice{{ forloop.counter }}" value="{{ choice.id }}" />
-            <label for="choice{{ forloop.counter }}">{{ choice.choice_text }}</label></br>
+            <label class="card choice-card hover-zoom-effect">
+                <div class="card-body display-inline">
+                    <input type="radio" class="choice-vote-input" name="choice" id="choice{{ forloop.counter }}"
+                        value="{{ choice.id }}" />
+                    <span class="checkmark"></span>
+                    <div class="choice-text">
+                        <h5>{{ choice.choice_text }}</h5>
+                    </div>
+                </div>
+
+            </label>
+
             {% endfor %}
             <input class="btn btn-primary" type="submit" value="Vote">
         </form>
+        {% endif %}
     </div>
 </div>
 {% endblock content %}
