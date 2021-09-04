@@ -3,3 +3,10 @@
 .card {
     margin: 20px;
 }
+
+.navbar-brand {
+    font-size: 25px;
+    text-align: center;
+    vertical-align: center;
+    padding-left: 10px;
+}
