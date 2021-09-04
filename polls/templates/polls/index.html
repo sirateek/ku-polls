@@ -3,12 +3,13 @@
 
 {% block css %}
 <link rel="stylesheet" type="text/css" href="{% static 'polls/css/index.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'polls/css/empty-state.css' %}">
 {% endblock css %}
 
 {% block content %}
 <div class="card main-card">
   <div class="card-body">
-    KU - Polls
+    <h2>Polls List</h2>
     {% if latest_question_list %}
       {% for question in latest_question_list %}
           <a href="{% url 'polls:detail' question.id %}">
@@ -25,7 +26,14 @@
           </a>
       {% endfor %}
     {% else %}
-    <p>No polls are available.</p>
+    <div class="empty-state">
+      <div class="empty-state-icon">
+        <i class="bi bi-patch-question-fill"></i>
+      </div>
+      <div class="empty-state-text">
+        No polls are available.
+      </div>
+    </div>
     {% endif %}
   </div>
 </div>
