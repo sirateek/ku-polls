@@ -1,10 +1,9 @@
-from django.http import HttpResponse
 from django.http.response import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 from django.views import generic
 from django.utils import timezone
-import datetime
+import json
 
 from .models import Choice, Question
 
@@ -37,12 +36,27 @@ class DetailView(generic.DetailView):
         return Question.objects.filter(pub_date__lte=timezone.now())
 
 
-class ResultsView(generic.DetailView):
+def results(request, question_id):
     """Poll result page that displays the results for a particular question.
     """
 
-    model = Question
-    template_name = 'polls/results.html'
+    question = get_object_or_404(Question, pk=question_id)
+    # For frontend to display the warning alert if there is no vote.
+    is_has_some_vote = False
+    # Export choice and vote results to json for piechart in frontend.
+    vote_results = []
+    for choice in question.choice_set.all():
+        vote_results.append([choice.choice_text, choice.votes])
+        if choice.votes > 0:
+            is_has_some_vote = True
+    vote_results = json.dumps(vote_results)
+    
+    context = {
+        'question': question,
+        'vote_results': vote_results,
+        'is_has_some_vote': is_has_some_vote
+    }
+    return render(request, 'polls/results.html', context)
 
 
 def vote(request, question_id):
