@@ -4,6 +4,7 @@
 {% block css %}
 <link rel="stylesheet" type="text/css" href="{% static 'polls/css/index.css' %}">
 <link rel="stylesheet" type="text/css" href="{% static 'polls/css/empty-state.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'polls/css/hover-zoom-effect.css' %}">
 {% endblock css %}
 
 {% block content %}
@@ -11,20 +12,20 @@
   <div class="card-body">
     <h2>Polls List</h2>
     {% if latest_question_list %}
-      {% for question in latest_question_list %}
-          <a href="{% url 'polls:detail' question.id %}">
-            <div class="card question-card">
-              <div class="question-card-content">
-                <div class="card-body">
-                  {{question.question_text }}
-                </div>
-                <div class="arrow">
-                  <i class="bi bi-chevron-right"></i>
-                </div>
-              </div>
-            </div>
-          </a>
-      {% endfor %}
+    {% for question in latest_question_list %}
+    <a class="question-card" href="{% url 'polls:detail' question.id %}">
+      <div class="card hover-zoom-effect question-card">
+        <div class="question-card-content">
+          <div class="card-body">
+            {{question.question_text }}
+          </div>
+          <div class="arrow">
+            <i class="bi bi-chevron-right"></i>
+          </div>
+        </div>
+      </div>
+    </a>
+    {% endfor %}
     {% else %}
     <div class="empty-state">
       <div class="empty-state-icon">
