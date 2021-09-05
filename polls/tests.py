@@ -3,6 +3,7 @@ from django.utils import timezone
 from django.urls import reverse
 from .models import Question
 import datetime
+import json
 
 
 def create_question(question_text, days):
@@ -95,6 +96,40 @@ class QuestionDetailViewTests(TestCase):
         url = reverse('polls:detail', args=(past_question.id,))
         response = self.client.get(url)
         self.assertContains(response, past_question.question_text)
+
+
+class QuestionResultViewTests(TestCase):
+    def test_total_vote_count_response(self):
+        """The result view must display the total response
+        that count every vote in the question.
+        """
+        question = create_question(question_text="Some Question", days=0)
+        question.choice_set.create(choice_text="Test A", votes=5)
+        question.choice_set.create(choice_text="Test B", votes=3)
+
+        url = reverse('polls:results', args=(question.id,))
+        response = self.client.get(url)
+        self.assertEquals(response.context["total_vote_count"], 8)
+        self.assertContains(response, "8 responses")
+
+    def test_vote_result_json(self):
+        """The vote result that contain choice_text and votes on every choices
+        in json format that must be sent to Google Chart API to render the pie chart.
+        """
+        question = create_question(question_text="Some Question", days=0)
+        question.choice_set.create(choice_text="Test A", votes=2)
+        question.choice_set.create(choice_text="Test B", votes=1)
+        question.choice_set.create(choice_text="Test C", votes=0)
+
+        url = reverse('polls:results', args=(question.id,))
+        response = self.client.get(url)
+        # Convert the vote_results back to python readable data
+        vote_results_list = json.loads(response.context["vote_results"])
+        self.assertEquals(vote_results_list, [
+            ["Test A", 2],
+            ["Test B", 1],
+            ["Test C", 0]
+        ])
 
 
 class QuestionModelTests(TestCase):
