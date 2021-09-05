@@ -1,5 +1,9 @@
 .piechart {
+  padding: 30px;
   margin: 30px;
+  display: block;
+  block-size: fit-content;
+  overflow: auto;
 }
 
 .card-choice-detail {
