@@ -42,19 +42,18 @@ def results(request, question_id):
 
     question = get_object_or_404(Question, pk=question_id)
     # For frontend to display the warning alert if there is no vote.
-    is_has_some_vote = False
-    # Export choice and vote results to json for piechart in frontend.
+    total_vote_count = 0
+    # Export choice and vote results to json to be displayed piechart in frontend.
     vote_results = []
     for choice in question.choice_set.all():
         vote_results.append([choice.choice_text, choice.votes])
-        if choice.votes > 0:
-            is_has_some_vote = True
+        total_vote_count += choice.votes
     vote_results = json.dumps(vote_results)
-    
+
     context = {
         'question': question,
         'vote_results': vote_results,
-        'is_has_some_vote': is_has_some_vote
+        'total_vote_count': total_vote_count
     }
     return render(request, 'polls/results.html', context)
 

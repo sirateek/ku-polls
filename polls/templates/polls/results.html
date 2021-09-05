@@ -13,10 +13,12 @@
     </div>
     <div class="card-body">
         <h5>{{ question.question_text }}</h5>
-        {% if not is_has_some_vote %}
+        {% if total_vote_count == 0 %}
         <div class="alert alert-warning" role="alert">
             There is no vote on this question yet.
         </div>
+        {% else %}
+        <p>{{ total_vote_count }} response{{total_vote_count|pluralize}}</p>
         {% endif %}
         <div id="piechart" class="piechart"></div>
 

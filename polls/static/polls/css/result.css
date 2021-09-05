@@ -1,11 +1,11 @@
 .piechart {
-    width: 700px;
-    height: 600px;
-    margin-left: auto;
-    margin-right: auto;
+  width: 900px;
+  height: 500px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .card-choice-detail {
-    display: inline-flex;
-    align-items: center;
+  display: inline-flex;
+  align-items: center;
 }
