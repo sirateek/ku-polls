@@ -52,7 +52,11 @@
         var data = google.visualization.arrayToDataTable(chartData);
 
         var option = {
-            sliceVisibilityThreshold: 0
+            sliceVisibilityThreshold: 0,
+            chartArea: {
+                width: '900',
+                height: '500'
+            }
         }
         var chart = new google.visualization.PieChart(document.getElementById('piechart'));
 

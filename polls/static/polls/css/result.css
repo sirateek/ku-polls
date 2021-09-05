@@ -1,8 +1,5 @@
 .piechart {
-  width: 900px;
-  height: 500px;
-  margin-left: auto;
-  margin-right: auto;
+  margin: 30px;
 }
 
 .card-choice-detail {
