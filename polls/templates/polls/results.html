@@ -18,7 +18,7 @@
             There is no vote on this question yet.
         </div>
         {% else %}
-        <p>{{ total_vote_count }} response{{total_vote_count|pluralize}}</p>
+        <i>{{ total_vote_count }} vote{{total_vote_count|pluralize}} in total</i>
         {% endif %}
         <div id="piechart" class="piechart"></div>
 
