@@ -13,7 +13,8 @@ class Question(models.Model):
         """Check if question was published in last 24 hours.
 
         Returns:
-            Boolean telling whether the question was published in the last 24 hours
+            Boolean telling whether the question was published
+            in the last 24 hours
         """
         now = timezone.now()
         return now - datetime.timedelta(days=1) <= self.pub_date <= now
@@ -26,7 +27,8 @@ class Question(models.Model):
 
 
 class Choice(models.Model):
-    """Choice models representing the choice corresponding to each of poll question.
+    """Choice models representing the choice corresponding
+    to each of poll question.
     """
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     votes = models.IntegerField(default=0)

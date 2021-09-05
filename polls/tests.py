@@ -114,7 +114,8 @@ class QuestionResultViewTests(TestCase):
 
     def test_vote_result_json(self):
         """The vote result that contain choice_text and votes on every choices
-        in json format that must be sent to Google Chart API to render the pie chart.
+        in json format that must be sent to Google Chart API
+        to render the pie chart.
         """
         question = create_question(question_text="Some Question", days=0)
         question.choice_set.create(choice_text="Test A", votes=2)
@@ -156,6 +157,7 @@ class QuestionModelTests(TestCase):
         was_published_recently() returns True for questions whose pub_date
         is within the last day.
         """
-        time = timezone.now() - datetime.timedelta(hours=23, minutes=59, seconds=59)
+        time = timezone.now() - \
+            datetime.timedelta(hours=23, minutes=59, seconds=59)
         recent_question = Question(pub_date=time)
         self.assertIs(recent_question.was_published_recently(), True)

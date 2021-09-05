@@ -43,7 +43,8 @@ def results(request, question_id):
     question = get_object_or_404(Question, pk=question_id)
     # For frontend to display the warning alert if there is no vote.
     total_vote_count = 0
-    # Export choice and vote results to json to be displayed piechart in frontend.
+    # Export choice and vote results to json
+    # to be displayed piechart in frontend.
     vote_results = []
     for choice in question.choice_set.all():
         vote_results.append([choice.choice_text, choice.votes])
@@ -65,7 +66,8 @@ def vote(request, question_id):
     try:
         selected_choice = question.choice_set.get(pk=request.POST['choice'])
     except (KeyError, Choice.DoesNotExist):
-        # If the Choice doesn't not exit, Render the detail view with the `error_message`
+        # If the Choice doesn't not exit,
+        # Render the detail view with the `error_message`
         return render(request, 'polls/detail.html', {
             'question': question,
             'error_message': "You didn't select a choice."
@@ -73,4 +75,5 @@ def vote(request, question_id):
     else:
         selected_choice.votes += 1
         selected_choice.save()
-        return HttpResponseRedirect(reverse('polls:results', args=(question.id,)))
+        return HttpResponseRedirect(reverse('polls:results',
+                                            args=(question.id,)))
