@@ -8,6 +8,8 @@ class Question(models.Model):
     """
     question_text = models.CharField(max_length=200)
     pub_date = models.DateTimeField("Date Published")
+    end_date = models.DateTimeField(
+        "Date the poll will close.", default=timezone.now)
 
     def was_published_recently(self):
         """Check if question was published in last 24 hours.
