@@ -110,7 +110,7 @@ class QuestionResultViewTests(TestCase):
         url = reverse('polls:results', args=(question.id,))
         response = self.client.get(url)
         self.assertEquals(response.context["total_vote_count"], 8)
-        self.assertContains(response, "8 responses")
+        self.assertContains(response, "8 votes")
 
     def test_vote_result_json(self):
         """The vote result that contain choice_text and votes on every choices
