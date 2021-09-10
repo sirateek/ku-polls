@@ -161,3 +161,19 @@ class QuestionModelTests(TestCase):
             datetime.timedelta(hours=23, minutes=59, seconds=59)
         recent_question = Question(pub_date=time)
         self.assertIs(recent_question.was_published_recently(), True)
+
+    def test_is_published_with_just_published_question(self):
+        """
+        is_published() returns True when the pub_date is less than
+        or equal to the current time.
+        """
+        published_question = create_question("Published question", 0)
+        self.assertTrue(published_question.is_published())
+
+    def test_is_published_with_future_question(self):
+        """
+        is_published() returns False when the pub_date is gether than
+        the current time.
+        """
+        future_question = create_question("Unpublushed question", 1)
+        self.assertFalse(future_question.is_published())
