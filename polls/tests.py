@@ -172,7 +172,7 @@ class QuestionModelTests(TestCase):
 
     def test_is_published_with_future_question(self):
         """
-        is_published() returns False when the pub_date is gether than
+        is_published() returns False when the pub_date is greater than
         the current time.
         """
         future_question = create_question("Unpublushed question", 1)
