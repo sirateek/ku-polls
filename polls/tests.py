@@ -167,7 +167,15 @@ class QuestionModelTests(TestCase):
         is_published() returns True when the pub_date is less than
         or equal to the current time.
         """
-        published_question = create_question("Published question", 0)
+        just_published_question = create_question("Just Published question", 0)
+        self.assertTrue(just_published_question.is_published())
+
+    def test_is_published_with_old_question(self):
+        """
+        is_published() returns True when the pub_date is less than
+        or equal to the current time.
+        """
+        published_question = create_question("Published question", -1)
         self.assertTrue(published_question.is_published())
 
     def test_is_published_with_future_question(self):
