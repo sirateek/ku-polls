@@ -34,6 +34,12 @@ class Question(models.Model):
         return timezone.now() >= self.pub_date
 
     def can_vote(self):
+        """Check if the current time is between the pub_date
+        and end_date inclusively.
+
+        Returns:
+           Boolean telling whether question is accepting the vote or not.
+        """
         return self.pub_date <= timezone.now() <= self.end_date
 
     def __str__(self):
