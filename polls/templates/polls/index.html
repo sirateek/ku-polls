@@ -20,18 +20,48 @@
     {% endif %}
     {% if latest_question_list %}
     {% for question in latest_question_list %}
-    <a class="question-card" href="{% url 'polls:detail' question.id %}">
-      <div class="card hover-zoom-effect question-card">
-        <div class="question-card-content">
+    <div class="card question-card">
+      <div class="question-card-content">
+        <div class="question-card-info">
           <div class="card-body">
-            {{question.question_text }}
-          </div>
-          <div class="arrow">
-            <i class="bi bi-chevron-right"></i>
+            {{question.question_text}}
+            <div class="card-detail-question-id">
+              Question ID: {{question.id}}
+            </div>
           </div>
         </div>
+
+        <!-- Question action button -->
+        <div class="question-card-actions">
+          <a class="question-action-button question-action-button-view-poll-result"
+            href="{% url 'polls:results' question.id %}">
+            <div class="card question-action-button-view-poll-result hover-zoom-effect">
+              <div class="question-card-content">
+                <div class="card-body">
+                  View Poll result
+                </div>
+                <div class="arrow">
+                  <i class="bi bi-chevron-right"></i>
+                </div>
+              </div>
+            </div>
+          </a>
+          <a class="question-action-button question-action-button-vote" href="{% url 'polls:detail' question.id %}"
+            disabled>
+            <div class="card question-action-button-vote hover-zoom-effect">
+              <div class="question-card-content">
+                <div class="card-body">
+                  Vote
+                </div>
+                <div class="arrow">
+                  <i class="bi bi-chevron-right"></i>
+                </div>
+              </div>
+            </div>
+          </a>
+        </div>
       </div>
-    </a>
+    </div>
     {% endfor %}
     {% else %}
     <div class="empty-state">
