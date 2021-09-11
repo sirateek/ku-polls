@@ -22,9 +22,6 @@
         <div class="alert alert-danger" role="alert">
             <strong>There is no choice for this question.</strong>
         </div>
-        <a href="{% url 'polls:index'%}">
-            <button type="button" class="btn btn-primary">Back to home</button>
-        </a>
         {% else %}
         <form action="{% url 'polls:vote' question.id %}" method="POST">
             {% csrf_token %}
@@ -45,6 +42,9 @@
             <input class="btn btn-primary" type="submit" value="Vote">
         </form>
         {% endif %}
+        <a href="{% url 'polls:index' %}">
+            <input class="btn btn-primary" type="submit" value="Back to poll list">
+        </a>
     </div>
 </div>
 {% endblock content %}
