@@ -60,7 +60,8 @@ def results(request, question_id):
 
 
 def vote(request, question_id):
-    """Vote page that allow the user to vote on a particular question.
+    """Vote listener that accept the vote POST request from form action
+     in detail page.
     """
     question = get_object_or_404(Question, pk=question_id)
     try:
