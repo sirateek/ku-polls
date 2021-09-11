@@ -11,6 +11,13 @@
 <div class="card main-card">
   <div class="card-body">
     <h2>Polls List</h2>
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}" role="alert">
+      {{ message }}
+    </div>
+    {% endfor %}
+    {% endif %}
     {% if latest_question_list %}
     {% for question in latest_question_list %}
     <a class="question-card" href="{% url 'polls:detail' question.id %}">

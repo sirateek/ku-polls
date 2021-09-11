@@ -3,6 +3,8 @@ from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 from django.views import generic
 from django.utils import timezone
+from django.contrib import messages
+from django.shortcuts import redirect
 import json
 
 from .models import Choice, Question
@@ -26,6 +28,12 @@ def detail(request, question_id):
     """Question detail page that displays the question text with a form to vote
     """
     question = get_object_or_404(Question, pk=question_id)
+    if not question.can_vote():
+        message = f"Question no. {question_id} is not accepting the vote "
+        message += "anymore." if question.is_published() else "yet."
+        messages.add_message(request, messages.WARNING, message)
+        return redirect(reverse('polls:index'))
+
     context = {
         "question": question,
     }
