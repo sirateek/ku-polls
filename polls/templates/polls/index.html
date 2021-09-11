@@ -25,6 +25,15 @@
         <div class="question-card-info">
           <div class="card-body">
             {{question.question_text}}
+            {% if not question.can_vote %}
+            <span class="badge rounded-pill bg-warning text-dark">
+              {% if question.is_published %}
+              Poll ended
+              {% else %}
+              Poll not opened yet
+              {% endif %}
+            </span>
+            {% endif %}
             <div class="card-detail-question-id">
               Question ID: {{question.id}}
             </div>
@@ -33,6 +42,7 @@
 
         <!-- Question action button -->
         <div class="question-card-actions">
+          {% if question.is_published %}
           <a class="question-action-button question-action-button-view-poll-result"
             href="{% url 'polls:results' question.id %}">
             <div class="card question-action-button-view-poll-result hover-zoom-effect">
@@ -46,8 +56,9 @@
               </div>
             </div>
           </a>
-          <a class="question-action-button question-action-button-vote" href="{% url 'polls:detail' question.id %}"
-            disabled>
+          {% endif %}
+          {% if question.can_vote %}
+          <a class="question-action-button question-action-button-vote" href="{% url 'polls:detail' question.id %}">
             <div class="card question-action-button-vote hover-zoom-effect">
               <div class="question-card-content">
                 <div class="card-body">
@@ -59,6 +70,7 @@
               </div>
             </div>
           </a>
+          {% endif %}
         </div>
       </div>
     </div>

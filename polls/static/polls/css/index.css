@@ -1,6 +1,12 @@
 .question-card {
   margin: 20px;
+  transition: 0.2s;
 }
+
+.question-card:hover {
+  border-color: #636363;
+}
+
 .question-card-content {
   display: inline-flex;
 }
