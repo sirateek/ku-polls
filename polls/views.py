@@ -22,18 +22,14 @@ class IndexView(generic.ListView):
         ).order_by("-pub_date")[:5]
 
 
-class DetailView(generic.DetailView):
+def detail(request, question_id):
     """Question detail page that displays the question text with a form to vote
     """
-
-    model = Question
-    template_name = "polls/detail.html"
-
-    def get_queryset(self):
-        """
-        Excludes any questions that aren't published yet.
-        """
-        return Question.objects.filter(pub_date__lte=timezone.now())
+    question = get_object_or_404(Question, pk=question_id)
+    context = {
+        "question": question,
+    }
+    return render(request, 'polls/detail.html', context)
 
 
 def results(request, question_id):
