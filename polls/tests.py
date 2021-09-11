@@ -164,24 +164,23 @@ class QuestionModelTests(TestCase):
 
     def test_is_published_with_just_published_question(self):
         """
-        is_published() returns True when the pub_date is less than
-        or equal to the current time.
+        is_published() returns True when the current time is equal to pub_date.
         """
         just_published_question = create_question("Just Published question", 0)
         self.assertTrue(just_published_question.is_published())
 
     def test_is_published_with_old_question(self):
         """
-        is_published() returns True when the pub_date is less than
-        or equal to the current time.
+        is_published() returns True when the current time is greater than
+        the pub_date.
         """
         published_question = create_question("Published question", -1)
         self.assertTrue(published_question.is_published())
 
     def test_is_published_with_future_question(self):
         """
-        is_published() returns False when the pub_date is greater than
-        the current time.
+        is_published() returns False when the current time is less than
+        the pub_date.
         """
         future_question = create_question("Unpublushed question", 1)
         self.assertFalse(future_question.is_published())
@@ -205,7 +204,7 @@ class QuestionModelTests(TestCase):
         pub_date = timezone.now() - timezone.timedelta(days=2)
         end_date = timezone.now() - timezone.timedelta(days=1)
         old_question = Question(
-            "I'm stoped accept the new vote", pub_date=pub_date, end_date=end_date)
+            "I'm stoped accepting the new vote", pub_date=pub_date, end_date=end_date)
         self.assertFalse(old_question.can_vote())
 
     def test_can_vote_with_future_question(self):
