@@ -185,3 +185,36 @@ class QuestionModelTests(TestCase):
         """
         future_question = create_question("Unpublushed question", 1)
         self.assertFalse(future_question.is_published())
+
+    def test_can_vote_with_during_poll_period_question(self):
+        """
+        can_vote() returns True when the current datetime is between
+        pub_date and end_date.
+        """
+        pub_date = timezone.now() - timezone.timedelta(days=1)
+        end_date = timezone.now() + timezone.timedelta(days=1)
+        during_poll_period_question = Question(
+            "I'm still accepting the vote", pub_date=pub_date, end_date=end_date)
+        self.assertTrue(during_poll_period_question.can_vote())
+
+    def test_can_vote_with_old_question(self):
+        """
+        can_vote() returns False when the current datetime is after
+        the poll period.
+        """
+        pub_date = timezone.now() - timezone.timedelta(days=2)
+        end_date = timezone.now() - timezone.timedelta(days=1)
+        old_question = Question(
+            "I'm stoped accept the new vote", pub_date=pub_date, end_date=end_date)
+        self.assertFalse(old_question.can_vote())
+
+    def test_can_vote_with_future_question(self):
+        """
+        can_vote() returns False when the current datetime is behind
+        the poll period.
+        """
+        pub_date = timezone.now() + timezone.timedelta(days=1)
+        end_date = timezone.now() + timezone.timedelta(days=2)
+        future_question = Question(
+            "I'm still not opened yet", pub_date=pub_date, end_date=end_date)
+        self.assertFalse(future_question.can_vote())
