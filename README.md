@@ -1,5 +1,5 @@
 # ku-polls
-The online polls web application
+The online polls web application that have flexibility on open and close the poll's question. Also, User can view the polls result anytime in form of pie chart.
 
 ## 📦 Installation
 ```bash
@@ -11,7 +11,7 @@ Note: If you just clone this repository and run the command as above. You are li
 
 TLDR: I recommend for the one who want to serve it locally to set the `DEBUG=true` in the env config file as in the [instruction below](#-Config).
 
-## 🔧 Config
+## 🔧 Configuration
 The config file containing the Django config parameters for KU Polls app must be located in this directory `config/.env`
 
 You can set the 3 parameters for the Django. Every keys are optional, They all have the default value.
