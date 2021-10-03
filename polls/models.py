@@ -32,6 +32,8 @@ class Question(models.Model):
             Boolean telling the publish status of the question.
         """
         return timezone.now() >= self.pub_date
+    is_published.boolean = True
+    is_published.short_description = 'Published?'
 
     def can_vote(self):
         """Check if the current time is between the pub_date
@@ -41,6 +43,8 @@ class Question(models.Model):
            Boolean telling whether question is accepting the vote or not.
         """
         return self.pub_date <= timezone.now() <= self.end_date
+    can_vote.boolean = True
+    can_vote.short_description = "Accept new vote?"
 
     def __str__(self):
         return self.question_text
