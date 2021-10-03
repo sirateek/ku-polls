@@ -77,14 +77,20 @@ class QuestionIndexViewTests(TestCase):
 class QuestionDetailViewTests(TestCase):
     def test_future_question(self):
         """
-        The detail view of a question with a pub_date in the future
-        returns a 404 not found.
+        Accessing detail view of a question with a pub_date in the future
+        will be redirected back to the index page with the error message.
         """
         future_question = create_question(
             question_text="Future Question", days=5)
         url = reverse('polls:detail', args=(future_question.id,))
+        # This response should contain the redirect code to index page.
         response = self.client.get(url)
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, "/polls/")
+        # The index page should contain message that question is not opened.
+        index_response = self.client.get(response.url)
+        self.assertContains(
+            index_response, text=f"Question no. {future_question.id} is not accepting the vote yet.", status_code=200)
 
     def test_past_question(self):
         """
