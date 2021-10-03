@@ -163,8 +163,7 @@ class QuestionModelTests(TestCase):
         was_published_recently() returns False for questions whose pub_date
         is in the future.
         """
-        time = timezone.now() + datetime.timedelta(days=30)
-        future_question = Question(pub_date=time)
+        future_question = create_question("Dummy question", 30)
         self.assertIs(future_question.was_published_recently(), False)
 
     def test_was_published_recently_with_old_question(self):
@@ -172,8 +171,7 @@ class QuestionModelTests(TestCase):
         was_published_recently() returns False for questions whose pub_date
         is older than 1 day.
         """
-        time = timezone.now() - datetime.timedelta(days=1, seconds=1)
-        old_question = Question(pub_date=time)
+        old_question = create_question("Dummy question", -1)
         self.assertIs(old_question.was_published_recently(), False)
 
     def test_was_published_recently_with_recent_question(self):
@@ -181,9 +179,7 @@ class QuestionModelTests(TestCase):
         was_published_recently() returns True for questions whose pub_date
         is within the last day.
         """
-        time = timezone.now() - \
-            datetime.timedelta(hours=23, minutes=59, seconds=59)
-        recent_question = Question(pub_date=time)
+        recent_question = create_question("Dummy question", -0.99)
         self.assertIs(recent_question.was_published_recently(), True)
 
     def test_is_published_with_just_published_question(self):
@@ -191,7 +187,7 @@ class QuestionModelTests(TestCase):
         is_published() returns True when the current time is equal to pub_date.
         """
         just_published_question = create_question("Just Published question", 0)
-        self.assertTrue(just_published_question.is_published())
+        self.assertIs(just_published_question.is_published(), True)
 
     def test_is_published_with_old_question(self):
         """
@@ -199,7 +195,7 @@ class QuestionModelTests(TestCase):
         the pub_date.
         """
         published_question = create_question("Published question", -1)
-        self.assertTrue(published_question.is_published())
+        self.assertIs(published_question.is_published(), True)
 
     def test_is_published_with_future_question(self):
         """
@@ -207,37 +203,30 @@ class QuestionModelTests(TestCase):
         the pub_date.
         """
         future_question = create_question("Unpublushed question", 1)
-        self.assertFalse(future_question.is_published())
+        self.assertIs(future_question.is_published(), False)
 
     def test_can_vote_with_during_poll_period_question(self):
         """
         can_vote() returns True when the current datetime is between
         pub_date and end_date.
         """
-        pub_date = timezone.now() - timezone.timedelta(days=1)
-        end_date = timezone.now() + timezone.timedelta(days=1)
-        during_poll_period_question = Question(
-            "I'm still accepting the vote", pub_date=pub_date, end_date=end_date)
-        self.assertTrue(during_poll_period_question.can_vote())
+        during_poll_period_question = create_question(
+            "I'm still accepting the vote", -1, 1)
+        self.assertIs(during_poll_period_question.can_vote(), True)
 
     def test_can_vote_with_old_question(self):
         """
         can_vote() returns False when the current datetime is after
         the poll period.
         """
-        pub_date = timezone.now() - timezone.timedelta(days=2)
-        end_date = timezone.now() - timezone.timedelta(days=1)
-        old_question = Question(
-            "I'm stoped accepting the new vote", pub_date=pub_date, end_date=end_date)
-        self.assertFalse(old_question.can_vote())
+        old_question = create_question(
+            "I'm stoped accepting the new vote", -2, -1)
+        self.assertIs(old_question.can_vote(), False)
 
     def test_can_vote_with_future_question(self):
         """
         can_vote() returns False when the current datetime is behind
         the poll period.
         """
-        pub_date = timezone.now() + timezone.timedelta(days=1)
-        end_date = timezone.now() + timezone.timedelta(days=2)
-        future_question = Question(
-            "I'm still not opened yet", pub_date=pub_date, end_date=end_date)
-        self.assertFalse(future_question.can_vote())
+        future_question = create_question("I'm still not opened yet", 1, 2)
+        self.assertIs(future_question.can_vote(), False)
