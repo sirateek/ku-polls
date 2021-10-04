@@ -9,7 +9,7 @@ $ python3 manage.py runserver
 ```
 Note: If you just clone this repository and run the command as above. You are likely to run the django on the production mode which is **NOT recommended** for the one who want to serve it without a proper web server. See also [#12](https://github.com/sirateek/ku-polls/issues/12#issuecomment-922686620).
 
-TLDR: I recommend for the one who want to serve it locally to also set the `DEBUG=true` in the env config file as in the [instruction below](#-Configuration).
+TLDR: I recommend for the one who want to serve it locally to also set the `DEBUG=True` in the env config file as in the [instruction below](#-Configuration).
 
 ## 🔧 Configuration
 I have used the package `django-environ` to externalize the sensitive config of Django.
@@ -27,8 +27,8 @@ SECRET_KEY=some_key
 ALLOWED_HOSTS=localhost
 
 # The debug mode of the Django.
-# Type: bool | Default: false
-DEBUG=true
+# Type: bool | Default: False
+DEBUG=True
 ```
 
 ## Project Information
