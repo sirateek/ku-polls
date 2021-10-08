@@ -1,18 +1,49 @@
 .question-card {
   margin: 20px;
+  transition: 0.2s;
 }
+
+.question-card:hover {
+  border-color: #636363;
+}
+
 .question-card-content {
   display: inline-flex;
+}
+
+.card-detail-question-id {
+  color: #a3a3a3;
+  font-size: 12px;
+}
+
+.question-card-info {
+  flex: 5;
+}
+
+.question-card-actions {
+  flex: 4;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin: 10px;
 }
 
 .arrow {
   display: flex;
   align-items: center;
-  padding-right: 30px;
+  padding-right: 25px;
   transition: 0.2s;
 }
 
-.question-card:hover .arrow {
+.question-action-button:hover .arrow {
   padding-right: 10px;
   transition: 0.2s;
+}
+
+.question-action-button-view-poll-result {
+  flex: 6;
+}
+
+.question-action-button-vote {
+  flex: 4;
 }

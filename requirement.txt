@@ -1,1 +1,4 @@
-django-environ >= 0.4.5
+django-environ >= 0.7.0
+django >= 3.2.7
+coverage==5.5
+flake8==3.9.2
