@@ -1,4 +1,7 @@
 # ku-polls
+[![Django CI](https://github.com/sirateek/ku-polls/actions/workflows/django.yml/badge.svg)](https://github.com/sirateek/ku-polls/actions/workflows/django.yml)
+[![codecov](https://codecov.io/gh/sirateek/ku-polls/branch/master/graph/badge.svg?token=1YYGRMFOA3)](https://codecov.io/gh/sirateek/ku-polls)
+
 The online polls web application that have flexibility on open and close the poll's question. Also, User can view the polls result anytime in form of pie chart.
 
 ## 📦 Installation

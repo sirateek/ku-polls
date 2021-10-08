@@ -1,0 +1,43 @@
+name: Django CI
+
+on:
+  push:
+    branches:
+      - master
+      - "iteration**"
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  Test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Run Tests
+        run: python manage.py test
+
+  Coverage:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Run Coverage
+        run: coverage run manage.py test
+      - name: Submit coverage data to Codecov
+        run: bash <(curl -s https://codecov.io/bash)
