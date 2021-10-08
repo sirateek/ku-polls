@@ -4,3 +4,4 @@ cover_pylib=False
 omit=
   polls/migrations/*
   */site-packages/*
+  manage.py
