@@ -40,4 +40,4 @@ jobs:
       - name: Run Coverage
         run: coverage run manage.py test
       - name: Submit coverage data to Codecov
-        uses: codecov/codecov-action@v2.1.0
+        run: bash <(curl -s https://codecov.io/bash)
