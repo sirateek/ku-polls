@@ -1,0 +1,6 @@
+[run]
+branch=True
+cover_pylib=False
+omit=
+  polls/migrations/*
+  */site-packages/*
