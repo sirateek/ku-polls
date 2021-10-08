@@ -1,3 +1,4 @@
+"""Views for Polls app."""
 from django.http.response import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
@@ -11,8 +12,7 @@ from .models import Choice, Question
 
 
 class IndexView(generic.ListView):
-    """Poll Index page that displays the latest few questions
-    """
+    """Poll Index page that displays the latest few questions."""
 
     template_name = "polls/index.html"
     context_object_name = 'latest_question_list'
@@ -25,8 +25,7 @@ class IndexView(generic.ListView):
 
 
 def detail(request, question_id):
-    """Question detail page that displays the question text with a form to vote
-    """
+    """Question detail page that displays the question text with a form to vote."""
     question = get_object_or_404(Question, pk=question_id)
     if not question.can_vote():
         message = f"Question no. {question_id} is not accepting the vote "
@@ -41,9 +40,7 @@ def detail(request, question_id):
 
 
 def results(request, question_id):
-    """Poll result page that displays the results for a particular question.
-    """
-
+    """Poll result page that displays the results for a particular question."""
     question = get_object_or_404(Question, pk=question_id)
     # For frontend to display the warning alert if there is no vote.
     total_vote_count = 0
@@ -64,9 +61,7 @@ def results(request, question_id):
 
 
 def vote(request, question_id):
-    """Vote listener that accept the vote POST request from form action
-     in detail page.
-    """
+    """Vote listener that accept the vote POST request from form action in detail page."""
     question = get_object_or_404(Question, pk=question_id)
     try:
         selected_choice = question.choice_set.get(pk=request.POST['choice'])
