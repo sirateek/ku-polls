@@ -5,6 +5,7 @@ from django.urls import reverse
 from django.views import generic
 from django.utils import timezone
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect
 import json
 
@@ -60,6 +61,7 @@ def results(request, question_id):
     return render(request, 'polls/results.html', context)
 
 
+@login_required(login_url='/accounts/login/')
 def vote(request, question_id):
     """Vote listener that accept the vote POST request from form action in detail page."""
     question = get_object_or_404(Question, pk=question_id)

@@ -17,6 +17,27 @@
         <img src="{% static 'polls/images/KU_Polls_Logo.svg'%}" width="100" height="auto">
       </div>
     </a>
+    {% if user.is_authenticated %}
+    <div class="account">
+      <div class="account-detail">
+        <i class="bi bi-person-fill"></i> Hello, {{user.username}}
+      </div>
+      <a href="{% url 'logout'  %}">
+        <button type="button" class="btn btn-light">
+          Logout
+        </button>
+      </a>
+
+    </div>
+    {% else %}
+    <div class="account">
+      <a href="{% url 'login'  %}">
+        <button type="button" class="btn btn-light">
+          <i class="bi bi-person-fill"></i> Login
+        </button>
+      </a>
+    </div>
+    {% endif %}
   </nav>
   {% block content %}{% endblock content%}
 
