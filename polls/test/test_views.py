@@ -3,7 +3,7 @@ from django.test import TestCase
 from django.utils import timezone
 from django.urls import reverse
 from django.contrib.auth.models import User
-from polls.models import Question, Vote
+from polls.models import Question, Vote, Choice
 import datetime
 import json
 
@@ -116,6 +116,26 @@ class QuestionDetailViewTests(TestCase):
         url = reverse('polls:detail', args=(past_question.id,))
         response = self.client.get(url)
         self.assertContains(response, past_question.question_text)
+
+    def test_selected_choice(self):
+        """The choice that user selected must be auto selected in the next time user access detial page.
+        """
+        user = User.objects.create_user(username="test", password="test")
+        present_question = create_question("Example", 0, end_in_days=1)
+        choice_a = Choice.objects.create(
+            choice_text="A", question=present_question)
+        choice_b = Choice.objects.create(
+            choice_text="B", question=present_question)
+        vote_object = Vote.objects.create(user=user, choice=choice_a)
+        present_question.save()
+        choice_a.save()
+        choice_b.save()
+        vote_object.save()
+        self.client.login(username="test", password="test")
+        url = reverse('polls:detail', args=(present_question.id,))
+        response = self.client.get(url)
+        self.assertEqual(
+            response.context["user_selected_choice_id"], choice_a.id)
 
 
 class QuestionResultViewTests(TestCase):
