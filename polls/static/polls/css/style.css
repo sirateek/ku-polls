@@ -19,3 +19,17 @@ body {
 .main-card {
   margin: 30px;
 }
+
+.account {
+  display: inline-flex;
+  margin-right: 10px;
+}
+
+.account-detail {
+  color: white;
+  margin-right: 10px;
+  vertical-align: middle;
+  text-align: center;
+  height: auto;
+  padding-top: 5px;
+}
