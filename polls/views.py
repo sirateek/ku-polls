@@ -75,14 +75,19 @@ def vote(request, question_id):
             'error_message': "You didn't select a choice."
         })
     # Try getting the Vote Object from database
-    try:
-        vote_object = Vote.objects.get(user=request.user)
-    except Vote.DoesNotExist:
-        # If Vote object is not found. Create the new one.
-        Vote.objects.create(user=request.user, choice=selected_choice)
-    finally:
-        # If Found, Update the choice.
-        vote_object.choice = selected_choice
-        vote_object.save()
+    vote_object = get_vote_object(request.user, selected_choice)
+    vote_object.choice = selected_choice
+    vote_object.save()
     return HttpResponseRedirect(reverse('polls:results',
                                         args=(question.id,)))
+
+
+def get_vote_object(user, choice):
+    """Get the vote object. If not found, Automatically create the new one
+    """
+    try:
+        # If found, Return the existing one.
+        return Vote.objects.get(user=user, choice__question=choice.question)
+    except Vote.DoesNotExist:
+        # If not found, Create the new one.
+        return Vote.objects.create(user=user, choice=choice)
