@@ -84,3 +84,13 @@ class TestVoting(TestCase):
         self.vote(self.choice_b)
         self.assertEqual(self.choice_a.votes, 0)
         self.assertEqual(self.choice_b.votes, 1)
+
+    def test_vote_with_invalid_choice(self):
+        self.client.login(username="test_user", password="1234")
+        vote_data = {
+            "choice": -1
+        }
+        response = self.client.post(self.vote_target_url, data=vote_data)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(
+            response, text="You didn't select a choice or you select an invalid choice.", html=True)

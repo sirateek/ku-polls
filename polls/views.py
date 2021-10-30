@@ -72,7 +72,7 @@ def vote(request, question_id):
         # Render the detail view with the `error_message`
         return render(request, 'polls/detail.html', {
             'question': question,
-            'error_message': "You didn't select a choice."
+            'error_message': "You didn't select a choice or you select an invalid choice."
         })
     # Try getting the Vote Object from database
     vote_object = get_vote_object(request.user, selected_choice)
