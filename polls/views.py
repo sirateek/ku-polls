@@ -33,13 +33,14 @@ def detail(request, question_id):
         message += "anymore." if question.is_published() else "yet."
         messages.add_message(request, messages.WARNING, message)
         return redirect(reverse('polls:index'))
+    user_selected_choice_id = -1
     if request.user.is_authenticated:
         try:
             vote_object = Vote.objects.get(
                 user=request.user, choice__question=question)
             user_selected_choice_id = vote_object.choice.id
         except Vote.DoesNotExist:
-            user_selected_choice_id = -1
+            pass
 
     context = {
         "question": question,
