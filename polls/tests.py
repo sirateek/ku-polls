@@ -2,7 +2,8 @@
 from django.test import TestCase
 from django.utils import timezone
 from django.urls import reverse
-from .models import Question
+from django.contrib.auth.models import User
+from .models import Question, Vote
 import datetime
 import json
 
@@ -119,31 +120,42 @@ class QuestionDetailViewTests(TestCase):
 
 class QuestionResultViewTests(TestCase):
     """Test for Question Result View."""
+    user_count = 0
+
+    def vote_to_choice(self, choice):
+        user = User(username=f"TestUser{self.user_count}")
+        user.save()
+        self.user_count += 1
+        Vote.objects.create(user=user, choice=choice).save()
 
     def test_total_vote_count_response(self):
         """The result view must display the total response that count every vote in the question."""
         question = create_question(question_text="Some Question", days=0)
-        question.choice_set.create(choice_text="Test A", votes=5)
-        question.choice_set.create(choice_text="Test B", votes=3)
+        choice_a = question.choice_set.create(choice_text="Test A")
+        choice_b = question.choice_set.create(choice_text="Test B")
+        self.vote_to_choice(choice_a)
+        self.vote_to_choice(choice_b)
 
         url = reverse('polls:results', args=(question.id,))
         response = self.client.get(url)
-        self.assertEquals(response.context["total_vote_count"], 8)
-        self.assertContains(response, "8 votes")
+        self.assertEquals(response.context["total_vote_count"], 2)
+        self.assertContains(response, "2 votes")
 
     def test_vote_result_json(self):
         """Test he vote result that contain choice_text and votes on every choices in json format."""
         question = create_question(question_text="Some Question", days=0)
-        question.choice_set.create(choice_text="Test A", votes=2)
-        question.choice_set.create(choice_text="Test B", votes=1)
-        question.choice_set.create(choice_text="Test C", votes=0)
+        choice_a = question.choice_set.create(choice_text="Test A")
+        choice_b = question.choice_set.create(choice_text="Test B")
+        choice_c = question.choice_set.create(choice_text="Test C")
+        self.vote_to_choice(choice_a)
+        self.vote_to_choice(choice_b)
 
         url = reverse('polls:results', args=(question.id,))
         response = self.client.get(url)
         # Convert the vote_results back to python readable data
         vote_results_list = json.loads(response.context["vote_results"])
         self.assertEquals(vote_results_list, [
-            ["Test A", 2],
+            ["Test A", 1],
             ["Test B", 1],
             ["Test C", 0]
         ])
