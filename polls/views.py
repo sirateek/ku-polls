@@ -33,9 +33,18 @@ def detail(request, question_id):
         message += "anymore." if question.is_published() else "yet."
         messages.add_message(request, messages.WARNING, message)
         return redirect(reverse('polls:index'))
+    user_selected_choice_id = -1
+    if request.user.is_authenticated:
+        try:
+            vote_object = Vote.objects.get(
+                user=request.user, choice__question=question)
+            user_selected_choice_id = vote_object.choice.id
+        except Vote.DoesNotExist:
+            pass
 
     context = {
         "question": question,
+        "user_selected_choice_id": user_selected_choice_id
     }
     return render(request, 'polls/detail.html', context)
 
@@ -61,7 +70,7 @@ def results(request, question_id):
     return render(request, 'polls/results.html', context)
 
 
-@login_required(login_url='/accounts/login/')
+@ login_required(login_url='/accounts/login/')
 def vote(request, question_id):
     """Vote listener that accept the vote POST request from form action in detail page."""
     question = get_object_or_404(Question, pk=question_id)
