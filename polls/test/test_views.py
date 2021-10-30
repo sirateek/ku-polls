@@ -122,17 +122,26 @@ class QuestionDetailViewTests(TestCase):
         """
         user = User.objects.create_user(username="test", password="test")
         present_question = create_question("Example", 0, end_in_days=1)
+        url = reverse('polls:detail', args=(present_question.id,))
         choice_a = Choice.objects.create(
             choice_text="A", question=present_question)
         choice_b = Choice.objects.create(
             choice_text="B", question=present_question)
-        vote_object = Vote.objects.create(user=user, choice=choice_a)
         present_question.save()
         choice_a.save()
         choice_b.save()
-        vote_object.save()
+        # If user is not signed in, It should return -1
+        response = self.client.get(url)
+        self.assertEqual(
+            response.context["user_selected_choice_id"], -1)
         self.client.login(username="test", password="test")
-        url = reverse('polls:detail', args=(present_question.id,))
+        # If user is signed in but doesn't vote any choice, It should return -1
+        response = self.client.get(url)
+        self.assertEqual(
+            response.context["user_selected_choice_id"], -1)
+        # If user is signed in and vote for any choice, It should the choice id the user voted for.
+        vote_object = Vote.objects.create(user=user, choice=choice_a)
+        vote_object.save()
         response = self.client.get(url)
         self.assertEqual(
             response.context["user_selected_choice_id"], choice_a.id)
