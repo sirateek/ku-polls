@@ -9,7 +9,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect
 import json
 
-from .models import Choice, Question
+from .models import Choice, Question, Vote
 
 
 class IndexView(generic.ListView):
@@ -74,8 +74,15 @@ def vote(request, question_id):
             'question': question,
             'error_message': "You didn't select a choice."
         })
-    else:
-        selected_choice.votes += 1
-        selected_choice.save()
-        return HttpResponseRedirect(reverse('polls:results',
-                                            args=(question.id,)))
+    # Try getting the Vote Object from database
+    try:
+        vote_object = Vote.objects.get(user=request.user)
+    except Vote.DoesNotExist:
+        # If Vote object is not found. Create the new one.
+        Vote.objects.create(user=request.user, choice=selected_choice)
+    finally:
+        # If Found, Update the choice.
+        vote_object.choice = selected_choice
+        vote_object.save()
+    return HttpResponseRedirect(reverse('polls:results',
+                                        args=(question.id,)))
