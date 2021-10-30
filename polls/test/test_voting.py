@@ -67,6 +67,8 @@ class TestVoting(TestCase):
         self.assertEqual(self.choice_b.votes, 0)
 
     def test_voting_without_login(self):
+        """Vote must be restricted if the user doesn't logged in
+        """
         response = self.vote(self.choice_a)
         self.assertEqual(response.status_code, 302)
         self.assertEqual(
