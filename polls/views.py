@@ -5,10 +5,14 @@ from django.urls import reverse
 from django.views import generic
 from django.utils import timezone
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect
 import json
+import logging
 
-from .models import Choice, Question
+from .models import Choice, Question, Vote
+
+logging = logging.getLogger("polls")
 
 
 class IndexView(generic.ListView):
@@ -32,9 +36,18 @@ def detail(request, question_id):
         message += "anymore." if question.is_published() else "yet."
         messages.add_message(request, messages.WARNING, message)
         return redirect(reverse('polls:index'))
+    user_selected_choice_id = -1
+    if request.user.is_authenticated:
+        try:
+            vote_object = Vote.objects.get(
+                user=request.user, choice__question=question)
+            user_selected_choice_id = vote_object.choice.id
+        except Vote.DoesNotExist:
+            pass
 
     context = {
         "question": question,
+        "user_selected_choice_id": user_selected_choice_id
     }
     return render(request, 'polls/detail.html', context)
 
@@ -60,6 +73,7 @@ def results(request, question_id):
     return render(request, 'polls/results.html', context)
 
 
+@ login_required(login_url='/accounts/login/')
 def vote(request, question_id):
     """Vote listener that accept the vote POST request from form action in detail page."""
     question = get_object_or_404(Question, pk=question_id)
@@ -70,10 +84,24 @@ def vote(request, question_id):
         # Render the detail view with the `error_message`
         return render(request, 'polls/detail.html', {
             'question': question,
-            'error_message': "You didn't select a choice."
+            'error_message': "You didn't select a choice or you select an invalid choice."
         })
-    else:
-        selected_choice.votes += 1
-        selected_choice.save()
-        return HttpResponseRedirect(reverse('polls:results',
-                                            args=(question.id,)))
+    # Try getting the Vote Object from database
+    vote_object = get_vote_object(request.user, selected_choice)
+    vote_object.choice = selected_choice
+    vote_object.save()
+    logging.info(
+        f"{request.user} has voted for {selected_choice} in {question}")
+    return HttpResponseRedirect(reverse('polls:results',
+                                        args=(question.id,)))
+
+
+def get_vote_object(user, choice):
+    """Get the vote object. If not found, Automatically create the new one
+    """
+    try:
+        # If found, Return the existing one.
+        return Vote.objects.get(user=user, choice__question=choice.question)
+    except Vote.DoesNotExist:
+        # If not found, Create the new one.
+        return Vote.objects.create(user=user, choice=choice)

@@ -1,8 +1,9 @@
-"""Unittesting for Polls app model and view."""
+"""Unittesting for Polls app view."""
 from django.test import TestCase
 from django.utils import timezone
 from django.urls import reverse
-from .models import Question
+from django.contrib.auth.models import User
+from polls.models import Question, Vote, Choice
 import datetime
 import json
 
@@ -116,85 +117,74 @@ class QuestionDetailViewTests(TestCase):
         response = self.client.get(url)
         self.assertContains(response, past_question.question_text)
 
+    def test_selected_choice(self):
+        """The choice that user selected must be auto selected in the next time user access detial page.
+        """
+        user = User.objects.create_user(username="test", password="test")
+        present_question = create_question("Example", 0, end_in_days=1)
+        url = reverse('polls:detail', args=(present_question.id,))
+        choice_a = Choice.objects.create(
+            choice_text="A", question=present_question)
+        choice_b = Choice.objects.create(
+            choice_text="B", question=present_question)
+        present_question.save()
+        choice_a.save()
+        choice_b.save()
+        # If user is not signed in, It should return -1
+        response = self.client.get(url)
+        self.assertEqual(
+            response.context["user_selected_choice_id"], -1)
+        self.client.login(username="test", password="test")
+        # If user is signed in but doesn't vote any choice, It should return -1
+        response = self.client.get(url)
+        self.assertEqual(
+            response.context["user_selected_choice_id"], -1)
+        # If user is signed in and vote for any choice, It should the choice id the user voted for.
+        vote_object = Vote.objects.create(user=user, choice=choice_a)
+        vote_object.save()
+        response = self.client.get(url)
+        self.assertEqual(
+            response.context["user_selected_choice_id"], choice_a.id)
+
 
 class QuestionResultViewTests(TestCase):
     """Test for Question Result View."""
+    user_count = 0
+
+    def vote_to_choice(self, choice):
+        user = User(username=f"TestUser{self.user_count}")
+        user.save()
+        self.user_count += 1
+        Vote.objects.create(user=user, choice=choice).save()
 
     def test_total_vote_count_response(self):
         """The result view must display the total response that count every vote in the question."""
         question = create_question(question_text="Some Question", days=0)
-        question.choice_set.create(choice_text="Test A", votes=5)
-        question.choice_set.create(choice_text="Test B", votes=3)
+        choice_a = question.choice_set.create(choice_text="Test A")
+        choice_b = question.choice_set.create(choice_text="Test B")
+        self.vote_to_choice(choice_a)
+        self.vote_to_choice(choice_b)
 
         url = reverse('polls:results', args=(question.id,))
         response = self.client.get(url)
-        self.assertEquals(response.context["total_vote_count"], 8)
-        self.assertContains(response, "8 votes")
+        self.assertEquals(response.context["total_vote_count"], 2)
+        self.assertContains(response, "2 votes")
 
     def test_vote_result_json(self):
         """Test he vote result that contain choice_text and votes on every choices in json format."""
         question = create_question(question_text="Some Question", days=0)
-        question.choice_set.create(choice_text="Test A", votes=2)
-        question.choice_set.create(choice_text="Test B", votes=1)
-        question.choice_set.create(choice_text="Test C", votes=0)
+        choice_a = question.choice_set.create(choice_text="Test A")
+        choice_b = question.choice_set.create(choice_text="Test B")
+        choice_c = question.choice_set.create(choice_text="Test C")
+        self.vote_to_choice(choice_a)
+        self.vote_to_choice(choice_b)
 
         url = reverse('polls:results', args=(question.id,))
         response = self.client.get(url)
         # Convert the vote_results back to python readable data
         vote_results_list = json.loads(response.context["vote_results"])
         self.assertEquals(vote_results_list, [
-            ["Test A", 2],
+            ["Test A", 1],
             ["Test B", 1],
             ["Test C", 0]
         ])
-
-
-class QuestionModelTests(TestCase):
-    """Test for Question model."""
-
-    def test_was_published_recently_with_future_question(self):
-        """was_published_recently() returns False for questions whose pub_date is in the future."""
-        future_question = create_question("Dummy question", 30)
-        self.assertIs(future_question.was_published_recently(), False)
-
-    def test_was_published_recently_with_old_question(self):
-        """was_published_recently() returns False for questions whose pub_date is older than 1 day."""
-        old_question = create_question("Dummy question", -1)
-        self.assertIs(old_question.was_published_recently(), False)
-
-    def test_was_published_recently_with_recent_question(self):
-        """was_published_recently() returns True for questions whose pub_date is within the last day."""
-        recent_question = create_question("Dummy question", -0.99)
-        self.assertIs(recent_question.was_published_recently(), True)
-
-    def test_is_published_with_just_published_question(self):
-        """is_published() returns True when the current time is equal to pub_date."""
-        just_published_question = create_question("Just Published question", 0)
-        self.assertIs(just_published_question.is_published(), True)
-
-    def test_is_published_with_old_question(self):
-        """is_published() returns True when the current time is greater than the pub_date."""
-        published_question = create_question("Published question", -1)
-        self.assertIs(published_question.is_published(), True)
-
-    def test_is_published_with_future_question(self):
-        """is_published() returns False when the current time is less than the pub_date."""
-        future_question = create_question("Unpublushed question", 1)
-        self.assertIs(future_question.is_published(), False)
-
-    def test_can_vote_with_during_poll_period_question(self):
-        """can_vote() returns True when the current datetime is between pub_date and end_date."""
-        during_poll_period_question = create_question(
-            "I'm still accepting the vote", -1, 1)
-        self.assertIs(during_poll_period_question.can_vote(), True)
-
-    def test_can_vote_with_old_question(self):
-        """can_vote() returns False when the current datetime is after the poll period."""
-        old_question = create_question(
-            "I'm stoped accepting the new vote", -2, -1)
-        self.assertIs(old_question.can_vote(), False)
-
-    def test_can_vote_with_future_question(self):
-        """can_vote() returns False when the current datetime is behind the poll period."""
-        future_question = create_question("I'm still not opened yet", 1, 2)
-        self.assertIs(future_question.can_vote(), False)

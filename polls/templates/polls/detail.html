@@ -29,15 +29,14 @@
             <label class="card choice-card hover-zoom-effect">
                 <div class="card-body display-inline">
                     <input type="radio" class="choice-vote-input" name="choice" id="choice{{ forloop.counter }}"
-                        value="{{ choice.id }}" />
+                        value="{{ choice.id }}" {% if choice.id == user_selected_choice_id %}checked="checked"
+                        {% endif %} />
                     <span class="checkmark"></span>
                     <div class="choice-text">
                         <h5>{{ choice.choice_text }}</h5>
                     </div>
                 </div>
-
             </label>
-
             {% endfor %}
             <input class="btn btn-primary" type="submit" value="Vote">
         </form>
