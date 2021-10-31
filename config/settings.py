@@ -134,16 +134,12 @@ LOGGING = {
     },
     'root': {
         'handlers': ['console'],
-        'level': 'WARNING',
+        'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
     },
     'loggers': {
-        'polls': {
-            'handlers': ['console'],
-            'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
-
-        },
         'django': {
             'handlers': ['console'],
+            'propagate': False,
         }
     },
 }
