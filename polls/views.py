@@ -8,8 +8,11 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect
 import json
+import logging
 
 from .models import Choice, Question, Vote
+
+logging = logging.getLogger("polls")
 
 
 class IndexView(generic.ListView):
@@ -87,6 +90,8 @@ def vote(request, question_id):
     vote_object = get_vote_object(request.user, selected_choice)
     vote_object.choice = selected_choice
     vote_object.save()
+    logging.info(
+        f"{request.user} has voted for {selected_choice} in {question}")
     return HttpResponseRedirect(reverse('polls:results',
                                         args=(question.id,)))
 
