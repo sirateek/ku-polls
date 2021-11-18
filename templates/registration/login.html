@@ -49,6 +49,9 @@
 
                 <input type="hidden" name="next" value="{{next}}" />
             </form>
+            <a href="/signup/">
+                <button type="submit" class="btn btn-primary">Register</button>
+            </a>
             {# If you have written a password_reset template, then add here #}
             <p>
                 <a href="{% url 'password_reset' %}">Forgot password?</a>

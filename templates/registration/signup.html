@@ -1,0 +1,55 @@
+{% extends 'registration/base.html' %}
+
+{% load static %}
+
+{% block css %}
+<style>
+    .login-card {
+        max-width: 800px;
+        margin: 10px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .full-page {
+        width: 100%;
+        height: 100%;
+    }
+
+
+    input {
+        margin-top: 10px;
+        margin-bottom: 10px
+    }
+</style>
+{% endblock css %}
+
+
+{% block content %}
+<div class="full-page">
+    <div class="card login-card">
+        <div class="card-body">
+            <h2>Register</h2>
+            <form method="post">
+                {% csrf_token %}
+                {% if form.errors %}
+                {% for error in errors %}
+                <div class="alert alert-danger" role="alert">
+                    {{ error }}
+                </div>
+                {% endfor %}
+                {% endif %}
+                {{ form.as_p }}
+
+                <button type="submit" class="btn btn-primary">Register</button>
+
+                <input type="hidden" name="next" value="{{next}}" />
+            </form>
+            {# If you have written a password_reset template, then add here #}
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
+
+</html>
