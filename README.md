@@ -9,7 +9,7 @@ The online polls web application that have flexibility on open and close the pol
 
 ```bash
 $ git clone https://github.com/sirateek/ku-polls.git
-$ pip3 install -r requirement.txt
+$ pip3 install -r requirements.txt
 $ python3 manage.py runserver
 ```
 
